@@ -1,3 +1,4 @@
+import { AcademicSemester } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
@@ -10,7 +11,7 @@ const createAcademicSemester = catchAsync(
       semesterData
     );
 
-    sendResponse(res, {
+    sendResponse<AcademicSemester>(res, {
       statusCode: 201,
       success: true,
       message: 'Academic Semester created successfully',
@@ -23,7 +24,7 @@ const getAllAcademicSemesters = catchAsync(
   async (req: Request, res: Response) => {
     const result = await AcademicSemesterService.getAllAcademicSemesters();
 
-    sendResponse(res, {
+    sendResponse<AcademicSemester[]>(res, {
       statusCode: 200,
       success: true,
       message: 'Academic Semesters retrieved successfully',
@@ -37,7 +38,7 @@ const getAcademicSemesterById = catchAsync(
     const { id } = req.params;
     const result = await AcademicSemesterService.getAcademicSemesterById(id);
 
-    sendResponse(res, {
+    sendResponse<AcademicSemester>(res, {
       statusCode: 200,
       success: true,
       message: 'Academic Semester retrieved successfully',
@@ -55,7 +56,7 @@ const updateAcademicSemester = catchAsync(
       updatedData
     );
 
-    sendResponse(res, {
+    sendResponse<AcademicSemester>(res, {
       statusCode: 200,
       success: true,
       message: 'Academic Semester updated successfully',
@@ -69,7 +70,7 @@ const deleteAcademicSemester = catchAsync(
     const { id } = req.params;
     await AcademicSemesterService.deleteAcademicSemester(id);
 
-    sendResponse(res, {
+    sendResponse<AcademicSemester>(res, {
       statusCode: 200,
       success: true,
       message: 'Academic Semester deleted successfully',
