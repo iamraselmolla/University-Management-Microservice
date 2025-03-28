@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\Md Rasel Molla\\Desktop\\Univeristy-management Micro Service\\logs\\winston\\successes\\.f011001b9633a56a8d6f4ac6a337f66ffa96cd59-audit.json",
+    "files": [
+        {
+            "date": 1743187122721,
+            "name": "C:\\Users\\Md Rasel Molla\\Desktop\\Univeristy-management Micro Service\\logs\\winston\\successes\\phu-2025-29-03-00-success.log",
+            "hash": "fcaebc6db885c25db6e9bf6b605340285818e6e935330c93fe470eef02ea5bed"
+        }
+    ],
+    "hashType": "sha256"
+}
