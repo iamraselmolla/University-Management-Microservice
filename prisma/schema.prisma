@@ -17,3 +17,37 @@ model User {
   id String @id @default(uuid())
   name String
 }
+
+model AcademicFaculty{
+  id String @id @default(uuid())
+  title String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  academicDeparmtnets AcedemicDepartment[] 
+
+  @@map("academic_faculty")
+}
+model AcedemicDepartment{
+  id String @id @default(uuid())
+  title String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  academicFaculty AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
+  academicFacultyId String
+}
+model Student{
+  id String @id @default(uuid())
+  studentId String
+  firstName String
+  lastName String
+  middleName String
+  profileImage String
+  email String @unique
+  contactInfo Int
+  gender String
+  bloodGroup String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("students")
+}
