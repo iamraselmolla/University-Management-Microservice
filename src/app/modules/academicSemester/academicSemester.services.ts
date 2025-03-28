@@ -3,12 +3,22 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const createAcademicSemester = async (semesterData: {
-  year: string,
-  title: string,
-  code: string,
-  startMonth: string,
-  endMonth: string,
+  year: string;
+  title: string;
+  code: string;
+  startMonth: string;
+  endMonth: string;
 }) => {
+  const findSemester = await prisma.academicSemester.findFirst({
+    where: {
+      title: semesterData.title,
+      year: semesterData.year,
+    },
+  });
+
+  if (findSemester) {
+    throw new Error('Semester already exists');
+  }
   return await prisma.academicSemester.create({
     data: semesterData,
   });
@@ -30,11 +40,11 @@ const getAcademicSemesterById = async (id: string) => {
 const updateAcademicSemester = async (
   id: string,
   updatedData: Partial<{
-    year: string,
-    title: string,
-    code: string,
-    startMonth: string,
-    endMonth: string,
+    year: string;
+    title: string;
+    code: string;
+    startMonth: string;
+    endMonth: string;
   }>
 ) => {
   return await prisma.academicSemester.update({
