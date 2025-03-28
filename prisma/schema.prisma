@@ -17,6 +17,17 @@ model User {
   id String @id @default(uuid())
   name String
 }
+model AcademicSemester {
+  id String @id @default(uuid())
+  year String
+  title String
+  code String
+  startMonth String
+  endMonth String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Students Student[]
+}
 
 model AcademicFaculty{
   id String @id @default(uuid())
@@ -48,6 +59,8 @@ model Student{
   bloodGroup String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  academicSemester AcademicSemester @relation(fields: [academicSemesterId], references: [id])
+  academicSemesterId String
 
   @@map("students")
 }
