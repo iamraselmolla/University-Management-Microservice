@@ -1,5 +1,6 @@
 import { AcademicSemester } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
+import { IGenericResponse } from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AcademicSemesterService } from './academicSemester.services';
@@ -22,9 +23,13 @@ const createAcademicSemester = catchAsync(
 
 const getAllAcademicSemesters = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await AcademicSemesterService.getAllAcademicSemesters();
+    const { page, limit } = req.query;
+    const result = await AcademicSemesterService.getAllAcademicSemesters(
+      Number(page) || 1,
+      Number(limit) || 10
+    );
 
-    sendResponse<AcademicSemester[]>(res, {
+    sendResponse<IGenericResponse<AcademicSemester[]>>(res, {
       statusCode: 200,
       success: true,
       message: 'Academic Semesters retrieved successfully',

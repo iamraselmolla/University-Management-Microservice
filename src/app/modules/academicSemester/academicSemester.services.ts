@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { AcademicSemester, PrismaClient } from '@prisma/client';
+import { IGenericResponse } from '../../../interfaces/common';
 
 const prisma = new PrismaClient();
 
@@ -24,10 +25,24 @@ const createAcademicSemester = async (semesterData: {
   });
 };
 
-const getAllAcademicSemesters = async () => {
-  return await prisma.academicSemester.findMany({
+const getAllAcademicSemesters = async (
+  page: number = 1,
+  limit: number = 10
+): Promise<IGenericResponse<AcademicSemester[]>> => {
+  const result = await prisma.academicSemester.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
     include: { students: true }, // Include related students
   });
+  const total = await prisma.academicSemester.count();
+  return {
+    data: result,
+    meta: {
+      page: Math.ceil(total / limit),
+      limit,
+      total,
+    },
+  };
 };
 
 const getAcademicSemesterById = async (id: string) => {
