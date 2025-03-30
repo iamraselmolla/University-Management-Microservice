@@ -23,7 +23,7 @@ const createAcademicSemester = catchAsync(
 
 const getAllAcademicSemesters = catchAsync(
   async (req: Request, res: Response) => {
-    const { page, limit } = req.query;
+    const { page, limit, searchTerm } = req.query;
     const result = await AcademicSemesterService.getAllAcademicSemesters(
       Number(page) || 1,
       Number(limit) || 10
