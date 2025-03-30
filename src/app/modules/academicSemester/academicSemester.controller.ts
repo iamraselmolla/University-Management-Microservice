@@ -2,6 +2,7 @@ import { AcademicSemester } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 import { IGenericResponse } from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
 import { AcademicSemesterService } from './academicSemester.services';
 
@@ -24,6 +25,7 @@ const createAcademicSemester = catchAsync(
 const getAllAcademicSemesters = catchAsync(
   async (req: Request, res: Response) => {
     const { page, limit, searchTerm } = req.query;
+    const filters = pick(req.query, ['searchTerm', 'code', 'year']);
     const result = await AcademicSemesterService.getAllAcademicSemesters(
       Number(page) || 1,
       Number(limit) || 10
