@@ -1,5 +1,6 @@
 import { AcademicSemester } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
+import httpStatus from 'http-status';
 import { IGenericResponse } from '../../../interfaces/common';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
@@ -8,6 +9,14 @@ import { AcademicSemesterService } from './academicSemester.services';
 
 const createAcademicSemester = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body) {
+      return sendResponse(res, {
+        statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+        success: false,
+        message: 'No request body found',
+        data: null,
+      });
+    }
     const semesterData = req.body;
     const result = await AcademicSemesterService.createAcademicSemester(
       semesterData
