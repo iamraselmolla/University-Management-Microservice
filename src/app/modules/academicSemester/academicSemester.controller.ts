@@ -9,7 +9,7 @@ import { AcademicSemesterService } from './academicSemester.services';
 
 const createAcademicSemester = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.body) {
+    if (!req.body || Object.entries(req.body).length === 0) {
       return sendResponse(res, {
         statusCode: httpStatus.INTERNAL_SERVER_ERROR,
         success: false,
