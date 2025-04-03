@@ -52,6 +52,16 @@ const getAllAcademicSemesters = async (
           AND: andConditions,
         }
       : {};
+
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      AND: Object.keys(filtersData).map(key => ({
+        [key]: {
+          equals: (filtersData as any)[key],
+        },
+      })),
+    });
+  }
   const result = await prisma.academicSemester.findMany({
     skip,
     take: Number(limit),
