@@ -37,8 +37,8 @@ const getAllAcademicSemesters = catchAsync(
     const filters = pick(req.query, ['searchTerm', 'code', 'year']);
     const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = await AcademicSemesterService.getAllAcademicSemesters(
-      Number(page) || 1,
-      Number(limit) || 10
+      filters,
+      options
     );
 
     sendResponse<IGenericResponse<AcademicSemester[]>>(res, {

@@ -1,4 +1,5 @@
 import { AcademicSemester, PrismaClient } from '@prisma/client';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 
 const prisma = new PrismaClient();
@@ -26,13 +27,13 @@ const createAcademicSemester = async (semesterData: {
 };
 
 const getAllAcademicSemesters = async (
-  page: number = 1,
-  limit: number = 10
+  filters,
+  options
 ): Promise<IGenericResponse<AcademicSemester[]>> => {
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
   const result = await prisma.academicSemester.findMany({
-    skip: (page - 1) * limit,
-    take: limit,
-    include: { students: true }, // Include related students
+    skip,
+    take: Number(limit),
   });
   const total = await prisma.academicSemester.count();
   return {
