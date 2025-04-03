@@ -78,7 +78,9 @@ const getAllAcademicSemesters = async (
   };
 };
 
-const getAcademicSemesterById = async (id: string) => {
+const getAcademicSemesterById = async (
+  id: string
+): Promise<AcademicSemester | null> => {
   return await prisma.academicSemester.findUnique({
     where: { id },
     include: { students: true },
