@@ -1,32 +1,69 @@
-export interface StudentCreateInput {
-  studentId: string;
-  firstName: string;
-  lastName: string;
-  middleName?: string | null; // Can be null or undefined
-  profileImage?: string | null; // Can be null or undefined
-  email: string;
-  contactInfo: string;
-  gender: string;
-  bloodGroup: string;
-  academicSemesterId: string;
-  academicDepartmentId: string;
-  academicFacultyId: string;
+export type IStudentFilterRequest = {
+    searchTerm?: string | undefined;
+    academicFacultyId?: string | undefined;
+    academicDepartmentId?: string | undefined;
+    academicSemesterId?: string | undefined;
+    studentId?: string | undefined;
+    email?: string | undefined;
+    contactNo?: string | undefined;
+    gender?: string | undefined;
+    bloodGroup?: string | undefined;
 }
 
-export interface Student {
-  id?: string;
-  studentId: string;
-  firstName: string;
-  lastName: string;
-  middleName?: string | null; // Updated to match Prisma's type
-  profileImage?: string | null; // Updated to match Prisma's type
-  email: string;
-  contactInfo: string;
-  gender: string;
-  bloodGroup: string;
-  createdAt?: Date; // Added to match Prisma's return type
-  updatedAt?: Date; // Added to match Prisma's return type
-  academicSemesterId: string;
-  academicDepartmentId: string;
-  academicFacultyId: string;
+export type IStudentMyCoursesRequest = {
+    academicSemesterId?: string | undefined;
+    courseId?: string | undefined;
 }
+
+export type IStudentMyCourseSchedulesRequest = {
+    academicSemesterId?: string | undefined;
+    courseId?: string | undefined;
+}
+
+export type StudentCreatedEvent = {
+    id: string;
+    name: {
+        firstName: string;
+        lastName: string;
+        middleName?: string;
+    };
+    dateOfBirth: string;
+    gender: string;
+    bloodGroup: string;
+    email: string;
+    contactNo: string;
+    profileImage: string;
+    academicFaculty: {
+        syncId: string;
+    };
+    academicDepartment: {
+        syncId: string;
+    };
+    academicSemester: {
+        syncId: string;
+    };
+};
+
+export type StudentUpdatedEvent = {
+    id: string;
+    name: {
+        firstName: string;
+        lastName: string;
+        middleName?: string;
+    };
+    dateOfBirth: string;
+    gender: string;
+    bloodGroup: string;
+    email: string;
+    contactNo: string;
+    profileImage: string;
+    academicFaculty: {
+        syncId: string;
+    };
+    academicDepartment: {
+        syncId: string;
+    };
+    academicSemester: {
+        syncId: string;
+    };
+};

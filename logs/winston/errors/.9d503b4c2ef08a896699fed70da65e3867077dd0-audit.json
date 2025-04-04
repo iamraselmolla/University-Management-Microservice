@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\Md Rasel Molla\\Desktop\\Univeristy-management Micro Service\\logs\\winston\\errors\\.9d503b4c2ef08a896699fed70da65e3867077dd0-audit.json",
+    "files": [
+        {
+            "date": 1743787398326,
+            "name": "C:\\Users\\Md Rasel Molla\\Desktop\\Univeristy-management Micro Service\\logs\\winston\\errors\\phu-2025-04-04-23-error.log",
+            "hash": "9646db22605adbbcbe4adc0f5ff131f655cbe7c02c2b6a39dfd97c1ef7f0c760"
+        }
+    ],
+    "hashType": "sha256"
+}

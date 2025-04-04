@@ -1,21 +1,46 @@
 import express from 'express';
-import * as courseController from './course.controller';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import auth from '../../middlewares/auth';
+import validateRequest from '../../middlewares/validateRequest';
+import { CourseController } from './course.controller';
+import { CourseValidation } from './course.validations';
 
 const router = express.Router();
+router.get('/', CourseController.getAllFromDB);
+router.get('/:id', CourseController.getByIdFromDB);
 
-// Create Course
-router.post('/', courseController.createCourse);
+router.post(
+    '/',
+    validateRequest(CourseValidation.create),
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    CourseController.insertIntoDB
+);
 
-// Get Course by ID
-router.get('/:id', courseController.getCourseById);
 
-// Get All Courses (with pagination)
-router.get('/', courseController.getAllCourses);
+router.patch(
+    '/:id',
+    validateRequest(CourseValidation.update),
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    CourseController.updateOneInDB
+);
 
-// Update Course
-router.put('/:id', courseController.updateCourse);
 
-// Delete Course
-router.delete('/:id', courseController.deleteCourse);
+router.delete(
+    '/:id',
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    CourseController.deleteByIdFromDB
+);
 
-export const CourseRouter = router;
+router.post(
+    "/:id/assign-faculties",
+    validateRequest(CourseValidation.assignOrRemoveFaculties),
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    CourseController.assignFaculies)
+
+router.delete(
+    "/:id/remove-faculties",
+    validateRequest(CourseValidation.assignOrRemoveFaculties),
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    CourseController.removeFaculties)
+
+export const courseRoutes = router;

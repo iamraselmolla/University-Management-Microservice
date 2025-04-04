@@ -1,22 +1,34 @@
-// src/routes/roomRoutes.ts
 import express from 'express';
-import * as roomController from './room.services';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import auth from '../../middlewares/auth';
+import validateRequest from '../../middlewares/validateRequest';
+import { RoomController } from './room.controller';
+import { RoomValidation } from './room.validations';
 
 const router = express.Router();
 
-// Create Room
-router.post('/', roomController.createRoom);
+router.get('/', RoomController.getAllFromDB);
+router.get('/:id', RoomController.getByIdFromDB);
 
-// Get Room by ID
-router.get('/:id', roomController.getRoomById);
+router.post(
+    '/',
+    validateRequest(RoomValidation.create),
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    RoomController.insertIntoDB
+);
 
-// Get All Rooms
-router.get('/', roomController.getAllRooms);
+router.patch(
+    '/:id',
+    validateRequest(RoomValidation.update),
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    RoomController.updateOneInDB
+);
 
-// Update Room
-router.put('/:id', roomController.updateRoom);
+router.delete(
+    '/:id',
+    auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+    RoomController.deleteByIdFromDB
+);
 
-// Delete Room
-router.delete('/:id', roomController.deleteRoom);
 
-export const RoomRouter = router;
+export const roomRoutes = router;

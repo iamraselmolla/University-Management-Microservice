@@ -1,105 +1,99 @@
-import { Request, Response } from 'express';
-import sendResponse from '../../../shared/sendResponse';
-import * as courseService from './course.services';
+import { Request, Response } from "express";
+import httpStatus from "http-status";
+import catchAsync from "../../../shared/catchAsync";
+import pick from "../../../shared/pick";
+import sendResponse from "../../../shared/sendResponse";
+import { courseFilterableFields } from "./course.constants";
+import { CourseService } from "./course.service";
 
-export const createCourse = async (req: Request, res: Response) => {
-  try {
-    const course = await courseService.createCourse(req.body);
+const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+    //console.log(req.body)
+    const result = await CourseService.insertIntoDB(req.body);
     sendResponse(res, {
-      statusCode: 201,
-      success: true,
-      message: 'Course created successfully',
-      data: course,
-    });
-  } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: 'Internal Server Error',
-    });
-  }
-};
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Course created successufully",
+        data: result
+    })
+})
 
-export const getCourseById = async (req: Request, res: Response) => {
-  try {
-    const course = await courseService.getCourseById(req.params.id);
-    if (!course) {
-      return sendResponse(res, {
-        statusCode: 404,
-        success: false,
-        message: 'Course not found',
-      });
-    }
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+    const filters = pick(req.query, courseFilterableFields);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await CourseService.getAllFromDB(filters, options);
     sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      data: course,
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Courses fetched successfully',
+        meta: result.meta,
+        data: result.data
     });
-  } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: 'Internal Server Error',
-    });
-  }
-};
+})
 
-export const getAllCourses = async (req: Request, res: Response) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await CourseService.getByIdFromDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Course fetched successfully',
+        data: result
+    });
+})
 
-    const { courses, total } = await courseService.getAllCourses(page, limit);
+const updateOneInDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await CourseService.updateOneInDB(id, req.body);
     sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      data: courses,
-      meta: {
-        page,
-        limit,
-        total,
-      },
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Course updated successfully',
+        data: result
     });
-  } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: 'Internal Server Error',
-    });
-  }
-};
+})
 
-export const updateCourse = async (req: Request, res: Response) => {
-  try {
-    const course = await courseService.updateCourse(req.params.id, req.body);
+const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await CourseService.deleteByIdFromDB(id);
     sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: 'Course updated successfully',
-      data: course,
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Course deleted successfully',
+        data: result
     });
-  } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: 'Internal Server Error',
-    });
-  }
-};
+})
 
-export const deleteCourse = async (req: Request, res: Response) => {
-  try {
-    await courseService.deleteCourse(req.params.id);
+
+const assignFaculies = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.log(req.body.faculties)
+    const result = await CourseService.assignFaculies(id, req.body.faculties);
     sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: 'Course deleted successfully',
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Course faculty assigned successfully',
+        data: result
     });
-  } catch (error) {
+})
+
+const removeFaculties = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.log(req.body.faculties)
+    const result = await CourseService.removeFaculties(id, req.body.faculties);
     sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: 'Internal Server Error',
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Course faculty deleted successfully',
+        data: result
     });
-  }
-};
+})
+
+export const CourseController = {
+    insertIntoDB,
+    getAllFromDB,
+    getByIdFromDB,
+    deleteByIdFromDB,
+    updateOneInDB,
+    assignFaculies,
+    removeFaculties
+}

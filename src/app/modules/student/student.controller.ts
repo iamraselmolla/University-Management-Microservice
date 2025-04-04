@@ -1,48 +1,111 @@
 import { Request, Response } from 'express';
-import * as studentService from './student.services';
+import httpStatus from 'http-status';
+import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
+import sendResponse from '../../../shared/sendResponse';
+import { studentFilterableFields } from './student.constants';
+import { StudentService } from './student.service';
 
-export const createStudent = async (req: Request, res: Response) => {
-  try {
-    const student = await studentService.createStudent(req.body);
-    res.status(201).json(student);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+    const result = await StudentService.insertIntoDB(req.body);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Student created successfully',
+        data: result
+    });
+});
 
-export const getStudentById = async (req: Request, res: Response) => {
-  try {
-    const student = await studentService.getStudentById(req.params.id);
-    if (!student) return res.status(404).json({ error: 'Student not found' });
-    res.json(student);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+    const filters = pick(req.query, studentFilterableFields);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await StudentService.getAllFromDB(filters, options);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Students fetched successfully',
+        meta: result.meta,
+        data: result.data
+    });
+});
 
-export const getAllStudents = async (_req: Request, res: Response) => {
-  try {
-    const students = await studentService.getAllStudents();
-    res.json(students);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await StudentService.getByIdFromDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Student fetched successfully',
+        data: result
+    });
+});
 
-export const updateStudent = async (req: Request, res: Response) => {
-  try {
-    const student = await studentService.updateStudent(req.params.id, req.body);
-    res.json(student);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const payload = req.body;
+    const result = await StudentService.updateIntoDB(id, payload);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Student updated successfully',
+        data: result
+    });
+});
 
-export const deleteStudent = async (req: Request, res: Response) => {
-  try {
-    await studentService.deleteStudent(req.params.id);
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+const deleteFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await StudentService.deleteFromDB(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Student deleted successfully',
+        data: result
+    });
+})
+
+const myCourses = catchAsync(async (req: Request, res: Response) => {
+    const user = (req as any).user;
+    const filter = pick(req.query, ['courseId', 'academicSemesterId'])
+    const result = await StudentService.myCourses(user.userId, filter);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Student Courses data fetched successfully',
+        data: result
+    });
+});
+
+const getMyCourseSchedules = catchAsync(async (req: Request, res: Response) => {
+    const user = (req as any).user;
+    const filter = pick(req.query, ['courseId', 'academicSemesterId'])
+    const result = await StudentService.getMyCourseSchedules(user.userId, filter);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Course Schedules data fetched successfully',
+        data: result
+    });
+});
+
+const myAcademicInfo = catchAsync(async (req: Request, res: Response) => {
+    const user = (req as any).user;
+    const result = await StudentService.getMyAcademicInfo(user.userId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'My Academic Info data fetched successfully',
+        data: result
+    });
+})
+
+
+export const StudentController = {
+    insertIntoDB,
+    getAllFromDB,
+    getByIdFromDB,
+    updateIntoDB,
+    deleteFromDB,
+    myCourses,
+    getMyCourseSchedules,
+    myAcademicInfo
 };
