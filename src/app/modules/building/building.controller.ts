@@ -1,9 +1,11 @@
+// src/controllers/buildingController.ts
 import { Building } from '@prisma/client';
 import { Request, Response } from 'express';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import * as buildingService from './building.services';
 
+// Create Building
 export const createBuilding = catchAsync(
   async (req: Request, res: Response) => {
     const building = await buildingService.createBuilding(req.body);
@@ -16,6 +18,7 @@ export const createBuilding = catchAsync(
   }
 );
 
+// Get Building by ID
 export const getBuildingById = catchAsync(
   async (req: Request, res: Response) => {
     const building = await buildingService.getBuildingById(req.params.id);
@@ -35,18 +38,23 @@ export const getBuildingById = catchAsync(
   }
 );
 
+// Get All Buildings
 export const getAllBuildings = catchAsync(
-  async (_req: Request, res: Response) => {
-    const buildings = await buildingService.getAllBuildings();
+  async (req: Request, res: Response) => {
+    const { page, limit, searchTerm } = req.query;
+    const filters = { searchTerm };
+    const options = { page: Number(page), limit: Number(limit) };
+    const result = await buildingService.getAllBuildings(filters, options);
     sendResponse<Building[]>(res, {
       statusCode: 200,
       success: true,
       message: 'Buildings retrieved successfully',
-      data: buildings,
+      data: result.data,
     });
   }
 );
 
+// Update Building
 export const updateBuilding = catchAsync(
   async (req: Request, res: Response) => {
     const building = await buildingService.updateBuilding(
@@ -62,6 +70,7 @@ export const updateBuilding = catchAsync(
   }
 );
 
+// Delete Building
 export const deleteBuilding = catchAsync(
   async (req: Request, res: Response) => {
     await buildingService.deleteBuilding(req.params.id);
