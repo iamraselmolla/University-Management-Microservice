@@ -36,7 +36,7 @@ const getDataById = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Academic Semster data fetched!!',
+    message: 'Academic Semster data fetched successfully',
     data: result,
   });
 });
