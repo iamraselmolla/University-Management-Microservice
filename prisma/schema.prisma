@@ -9,7 +9,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+// AcademicSemester Model
 model AcademicSemester {
   id                         String                      @id @default(uuid())
   year                       Int
